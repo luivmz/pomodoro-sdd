@@ -57,6 +57,8 @@ function render() {
   startButton.textContent = !isRunning && hasStartedCurrentCycle
     ? "Reanudar"
     : "Iniciar";
+  startButton.setAttribute("aria-disabled", String(isRunning));
+  pauseButton.setAttribute("aria-disabled", String(!isRunning));
   document.body.dataset.mode = currentMode === MODES.WORK
     ? "work"
     : "short-break";

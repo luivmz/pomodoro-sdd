@@ -24,6 +24,7 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   color: var(--text);
   background: linear-gradient(150deg, #eef1f7, var(--background) 55%);
@@ -142,6 +143,12 @@ body[data-mode="short-break"] .timer {
 
 .button:active {
   transform: translateY(1px);
+}
+
+.button[aria-disabled="true"]:not(.button-primary),
+.button-primary[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.65;
 }
 
 .button-primary {
