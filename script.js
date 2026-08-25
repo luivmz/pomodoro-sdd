@@ -60,6 +60,7 @@ function render() {
   document.body.dataset.mode = currentMode === MODES.WORK
     ? "work"
     : "short-break";
+  document.title = `${formatTime(remainingSeconds)} - ${modeLabel} | Pomodoro`;
 }
 
 function stopTimer() {
@@ -71,16 +72,59 @@ function stopTimer() {
   isRunning = false;
 }
 
+function playCompletionSound() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      return;
+    }
+
+    const audioContext = new AudioContextClass();
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const startAt = audioContext.currentTime;
+    const stopAt = startAt + 0.2;
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(880, startAt);
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(0.18, startAt + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, stopAt);
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(startAt);
+    oscillator.stop(stopAt);
+    oscillator.addEventListener("ended", () => {
+      audioContext.close().catch(() => {});
+    }, { once: true });
+
+    if (audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
+  } catch {
+    // El audio es complementario y nunca debe alterar el estado del ciclo.
+  }
+}
+
 function completeCurrentCycle() {
+  const completedMode = currentMode;
+
   stopTimer();
 
-  if (currentMode === MODES.WORK) {
+  if (completedMode === MODES.WORK) {
     completedPomodoros += 1;
-    currentMode = MODES.SHORT_BREAK;
-  } else {
-    currentMode = MODES.WORK;
+    render();
   }
 
+  playCompletionSound();
+  notificationElement.textContent = completedMode === MODES.WORK
+    ? "Work completado. Es momento de un descanso corto."
+    : "Short Break completado. Es momento de volver al trabajo.";
+
+  currentMode = completedMode === MODES.WORK
+    ? MODES.SHORT_BREAK
+    : MODES.WORK;
   remainingSeconds = getModeDuration();
   hasStartedCurrentCycle = false;
   render();
