@@ -1,0 +1,236 @@
+:root {
+  color-scheme: light;
+  --background: #f3f5f9;
+  --surface: #ffffff;
+  --text: #172033;
+  --muted: #566176;
+  --border: #cbd2df;
+  --work: #a32638;
+  --work-dark: #7c1d2b;
+  --break: #176b57;
+  --break-dark: #0f5142;
+  --focus: #005fcc;
+  --shadow: 0 18px 45px rgb(23 32 51 / 12%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background: linear-gradient(150deg, #eef1f7, var(--background) 55%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+.site-header {
+  padding: 1.5rem 1rem 1rem;
+  text-align: center;
+}
+
+.site-header h1,
+.site-header p {
+  margin: 0;
+}
+
+.site-header h1 {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  letter-spacing: -0.03em;
+}
+
+.site-header p,
+.mode-label {
+  color: var(--muted);
+}
+
+main {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: 1rem;
+}
+
+.timer-card {
+  width: min(100%, 38rem);
+  padding: clamp(1.25rem, 5vw, 2.75rem);
+  overflow-wrap: anywhere;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 0.5rem solid var(--work);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+body[data-mode="short-break"] .timer-card {
+  border-top-color: var(--break);
+}
+
+.timer-card h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.15rem;
+}
+
+.mode-label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.mode {
+  display: inline-block;
+  margin: 0.25rem 0 0;
+  padding: 0.3rem 0.8rem;
+  color: #ffffff;
+  background: var(--work);
+  border-radius: 999px;
+  font-weight: 750;
+}
+
+body[data-mode="short-break"] .mode {
+  background: var(--break);
+}
+
+.timer {
+  margin: 1.25rem 0 1.5rem;
+  color: var(--work-dark);
+  font-size: clamp(3.5rem, 18vw, 7rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 760;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+body[data-mode="short-break"] .timer {
+  color: var(--break-dark);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.button {
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  background: #f8f9fc;
+  border: 2px solid var(--border);
+  border-radius: 0.65rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.button:hover {
+  background: #e9edf4;
+  border-color: #9da8ba;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button-primary {
+  color: #ffffff;
+  background: var(--work);
+  border-color: var(--work);
+}
+
+.button-primary:hover {
+  background: var(--work-dark);
+  border-color: var(--work-dark);
+}
+
+body[data-mode="short-break"] .button-primary {
+  background: var(--break);
+  border-color: var(--break);
+}
+
+body[data-mode="short-break"] .button-primary:hover {
+  background: var(--break-dark);
+  border-color: var(--break-dark);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.counter {
+  margin: 1.5rem 0 0;
+  font-weight: 700;
+}
+
+.notification {
+  min-height: 3rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  color: var(--text);
+  background: #eef1f6;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+}
+
+.notification:empty::before {
+  content: "Las notificaciones del ciclo aparecerán aquí.";
+  color: var(--muted);
+}
+
+@media (min-width: 48rem) {
+  .site-header {
+    padding-top: 2.5rem;
+  }
+
+  main {
+    padding: 2rem;
+  }
+
+  .controls {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .timer-card,
+  .mode,
+  .button,
+  .notification {
+    border: 2px solid CanvasText;
+  }
+
+  .mode,
+  .button-primary {
+    color: ButtonText;
+    background: ButtonFace;
+    forced-color-adjust: auto;
+  }
+
+  .button:focus-visible {
+    outline: 3px solid Highlight;
+  }
+}
