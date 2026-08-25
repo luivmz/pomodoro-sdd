@@ -71,6 +71,21 @@ function stopTimer() {
   isRunning = false;
 }
 
+function completeCurrentCycle() {
+  stopTimer();
+
+  if (currentMode === MODES.WORK) {
+    completedPomodoros += 1;
+    currentMode = MODES.SHORT_BREAK;
+  } else {
+    currentMode = MODES.WORK;
+  }
+
+  remainingSeconds = getModeDuration();
+  hasStartedCurrentCycle = false;
+  render();
+}
+
 function tick() {
   if (!isRunning || timerIntervalId === null) {
     return;
@@ -83,8 +98,7 @@ function tick() {
   render();
 
   if (remainingSeconds === 0) {
-    stopTimer();
-    render();
+    completeCurrentCycle();
   }
 }
 
@@ -94,6 +108,7 @@ function startTimer() {
   }
 
   if (remainingSeconds === 0) {
+    completeCurrentCycle();
     return;
   }
 
